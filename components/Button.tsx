@@ -1,3 +1,4 @@
+'use client'
 import { cva, VariantProps } from 'class-variance-authority'
 import Link from 'next/link'
 import { ArrowRight, Sparkles } from 'lucide-react'
@@ -40,15 +41,32 @@ export default function Button({
   icon = true,
   ...props
 }: ButtonProps) {
- const Comp = href ? Link : 'button'  // ✅ Fixed - let TypeScript infer the type
+  // Split into two separate render paths to avoid TypeScript issues
+  if (href) {
+    return (
+      <Link 
+        href={href} 
+        className={button({ variant, size, className })}
+      >
+        <span className="relative z-10 flex items-center gap-2">
+          {variant === 'glow' && <Sparkles size={18} className="animate-spin-slow" />}
+          {children}
+          {icon && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
+        </span>
+      </Link>
+    )
+  }
 
   return (
-    <Comp href={href} className={button({ variant, size, className })} {...props}>
+    <button 
+      className={button({ variant, size, className })} 
+      {...props}
+    >
       <span className="relative z-10 flex items-center gap-2">
         {variant === 'glow' && <Sparkles size={18} className="animate-spin-slow" />}
         {children}
-        {icon && !href && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
+        {icon && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
       </span>
-    </Comp>
+    </button>
   )
 }
