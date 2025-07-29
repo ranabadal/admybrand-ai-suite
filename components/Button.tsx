@@ -40,7 +40,8 @@ export default function Button({
   icon = true,
   ...props
 }: ButtonProps) {
-  const Comp: any = href ? Link : 'button'
+ const Comp = href ? Link : 'button'  // ✅ Fixed - let TypeScript infer the type
+
   return (
     <Comp href={href} className={button({ variant, size, className })} {...props}>
       <span className="relative z-10 flex items-center gap-2">
